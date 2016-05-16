@@ -1,7 +1,12 @@
 {
   "name": "smolowik/propel-extraproperties-behavior",
   "description": "ExtraPropertiesBehavior is a propel behavior to store key/value extra fields in a propel model.",
-  "keywords": ["Propel", "Behavior", "ExtraProperties", "Key value"],
+  "keywords": [
+    "Propel",
+    "Behavior",
+    "ExtraProperties",
+    "Key value"
+  ],
   "homepage": "http://carpe-hora.github.com/ExtraPropertiesBehavior/",
   "license": "MIT",
   "authors": [
@@ -10,7 +15,7 @@
       "email": "julien_muetton@carpe-hora.com",
       "homepage": "http://www.carpe-hora.com"
     },
-	  {
+    {
       "name": "Aleksander Smołowik",
       "email": "smolowik@gmail.com"
     }
@@ -19,14 +24,17 @@
     "php": ">=5.2.4",
     "propel/propel": "2.0.*@dev"
   },
-  "type" : "propel-behavior",
+  "require-dev": {
+    "phpunit/phpunit": "4.*"
+  },
+  "type": "propel-behavior",
   "extra": {
-      "name": "extra_properties",
-      "class": "smolowik\\Propel\\Behavior\\ExtraProperties\\ExtraPropertiesBehavior"
+    "name": "extra_properties",
+    "class": "smolowik\\Propel\\Behavior\\ExtraProperties\\ExtraPropertiesBehavior"
   },
   "autoload": {
     "psr-4": {
-      "smolowik\\Propel\\Behavior\\ExtraProperties\\" : "src"
+      "smolowik\\Propel\\Behavior\\ExtraProperties\\":"src"
     }
   }
 }

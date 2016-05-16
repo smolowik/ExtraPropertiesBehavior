@@ -1,4 +1,8 @@
 <?php
+namespace smolowik\Propel\Behavior\ExtraProperties;
+
+use Propel\Generator\Model\Behavior;
+
 /**
  * This file declare the ExtraPropertiesBehaviorPeerBuilderModifier class.
  *

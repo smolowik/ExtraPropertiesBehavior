@@ -1,4 +1,8 @@
 <?php
+namespace smolowik\Propel\Behavior\ExtraProperties;
+
+use Propel\Common\Pluralizer\StandardEnglishPluralizer;
+use Propel\Generator\Model\Behavior;
 
 /**
  * This file declare the ExtraPropertiesBehaviorQueryBuilderModifier class.
@@ -41,7 +45,7 @@ class ExtraPropertiesBehaviorQueryBuilderModifier
         $this->builder = $builder;
         $this->objectClassname = $builder->getStubObjectBuilder()->getClassname();
         $this->queryClassname = $builder->getStubQueryBuilder()->getClassname();
-        $this->peerClassname = $builder->getStubPeerBuilder()->getClassname();
+        $this->peerClassname = $this->queryClassname;
     }
 
     protected function getPropertyTableName()
@@ -101,6 +105,84 @@ class ExtraPropertiesBehaviorQueryBuilderModifier
     protected function getPropertyColumnPhpName($name = 'property_name_column')
     {
         return $this->behavior->getPropertyColumnForParameter($name)->getPhpName();
+    }
+
+    public function staticMethods()
+    {
+        $propertyName = $this->getParameter('property_name');
+        $propertyNameMethod = ucfirst($propertyName);
+        $propertiesName = $this->getPluralForm($propertyName);
+        $propertiesNameMethod = ucfirst($propertiesName);
+
+        $script = <<<EOF
+/**
+ * Normalizes {$propertyName} name.
+ *
+ * @param String \${$propertyName}Name the {$propertyName} name to normalize.
+ * @param String the normalized {$propertyName} name
+ */
+static function normalize{$propertyNameMethod}Name(\${$propertyName}Name)
+{
+
+EOF;
+        if ($this->shouldNormalize()) {
+            $script .= <<<EOF
+  return strtoupper(\${$propertyName}Name);
+EOF;
+        } else {
+            $script .= <<<EOF
+  return \${$propertyName}Name;
+EOF;
+        }
+        $script .= <<<EOF
+
+}
+
+/**
+ * Normalizes {$propertyName} name.
+ *
+ * @deprecated see normalize{$propertyNameMethod}Name()
+ *
+ * @param String \${$propertyName}Name the {$propertyName} name to normalize.
+ * @param String the normalized {$propertyName} name
+ */
+static function normalizeExtraPropertyName(\${$propertyName}Name)
+{
+  return self::normalize{$propertyNameMethod}Name(\${$propertyName}Name);
+}
+
+/**
+ * Normalizes {$propertyName} value.
+ *
+ * @param String \${$propertyName}Value the {$propertyName} value to normalize.
+ * @param String the normalized {$propertyName} value
+ */
+static function normalize{$propertyNameMethod}Value(\${$propertyName}Value)
+{
+  return \${$propertyName}Value;
+}
+
+/**
+ * Normalizes {$propertyName} value.
+ *
+ * @deprecated see normalize{$propertyNameMethod}Value()
+ *
+ * @param String \${$propertyName}Value the {$propertyName} value to normalize.
+ * @param String the normalized {$propertyName} value
+ */
+static function normalizeExtraPropertyValue(\${$propertyName}Value)
+{
+  return self::normalize{$propertyNameMethod}Value(\${$propertyName}Value);
+}
+EOF;
+
+        return $script;
+    }
+
+
+    public function shouldNormalize()
+    {
+        return 'true' === $this->getParameter('normalize');
     }
 
 } // END OF ExtraPropertiesBehaviorQueryBuilderModifier

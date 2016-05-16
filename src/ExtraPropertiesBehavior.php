@@ -1,4 +1,9 @@
 <?php
+namespace smolowik\Propel\Behavior\ExtraProperties;
+
+use Propel\Generator\Model\Behavior;
+use Propel\Generator\Model\ForeignKey;
+
 /**
  * This file declare the ExtraPropertiesBehavior class.
  *

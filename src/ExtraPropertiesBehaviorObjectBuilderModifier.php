@@ -1,4 +1,10 @@
 <?php
+namespace smolowik\Propel\Behavior\ExtraProperties;
+
+use Propel\Common\Pluralizer\StandardEnglishPluralizer;
+use Propel\Generator\Builder\Om\ObjectBuilder;
+use Propel\Generator\Model\Behavior;
+use Propel\Runtime\Propel;
 
 /**
  * This file declare the ExtraPropertiesBehaviorObjectBuilderModifier class.
@@ -27,7 +33,7 @@ class ExtraPropertiesBehaviorObjectBuilderModifier
         $this->builder = $builder;
         $this->objectClassname = $builder->getStubObjectBuilder()->getClassname();
         $this->queryClassname = $builder->getStubQueryBuilder()->getClassname();
-        $this->peerClassname = $builder->getStubPeerBuilder()->getClassname();
+        $this->peerClassname = $this->queryClassname;
 
         // Add namespace for PHP >= 5.3
         $builder->declareClass('RuntimeException');
@@ -137,41 +143,42 @@ class ExtraPropertiesBehaviorObjectBuilderModifier
         return $script;
     }
 
-    public function objectFilter(&$script)
-    {
-        $parser = new PropelPHPParser($script, true);
-        $construct = $parser->findMethod('__construct');
-        $propertiesName = ucfirst($this->getPluralForm($this->getParameter('property_name')));
-
-        if (!strlen($construct)) {
-            $construct = <<<EOF
-
-/**
- * Initializes internal state of {$this->getActiveRecordClassName()} object.
- */
-public function __construct()
-{
-  parent::__construct();
-}
-
-EOF;
-            $parser->addMethodBefore('initialize'.$propertiesName, $construct);
-        }
-        $construct = $this->updateConstructFunctionWithInitialize($construct);
-        $parser->replaceMethod('__construct', $construct);
-        $script = $parser->getCode();
-    }
-
-    protected function updateConstructFunctionWithInitialize($currentCode)
-    {
-        $propertiesName = ucfirst($this->getPluralForm($this->getParameter('property_name')));
-
-        return preg_replace('#(\s*)parent::__construct\(\);#', <<<EOF
-$1parent::__construct();
-$1\$this->initialize$propertiesName();
-EOF
-        , $currentCode);
-    }
+//    public function objectFilter(&$script)
+//    {
+//        var_dump($script);
+//        $parser = new \PropelPHPParser($script, true);
+//        $construct = $parser->findMethod('__construct');
+//        $propertiesName = ucfirst($this->getPluralForm($this->getParameter('property_name')));
+//
+//        if (!strlen($construct)) {
+//            $construct = <<<EOF
+//
+///**
+// * Initializes internal state of {$this->getActiveRecordClassName()} object.
+// */
+//public function __construct()
+//{
+//  parent::__construct();
+//}
+//
+//EOF;
+//            $parser->addMethodBefore('initialize'.$propertiesName, $construct);
+//        }
+//        $construct = $this->updateConstructFunctionWithInitialize($construct);
+//        $parser->replaceMethod('__construct', $construct);
+//        $script = $parser->getCode();
+//    }
+//
+//    protected function updateConstructFunctionWithInitialize($currentCode)
+//    {
+//        $propertiesName = ucfirst($this->getPluralForm($this->getParameter('property_name')));
+//
+//        return preg_replace('#(\s*)parent::__construct\(\);#', <<<EOF
+//$1parent::__construct();
+//$1\$this->initialize$propertiesName();
+//EOF
+//        , $currentCode);
+//    }
 
     /**
      * add methods to define extra properties.
