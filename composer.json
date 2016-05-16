@@ -23,7 +23,7 @@
   "extra": {
       "name": "extra_properties",
       "class": "smolowik\\Propel\\Behavior\\ExtraProperties\\ExtraPropertiesBehavior"
-  }
+  },
   "autoload": {
     "psr-4": {
       "smolowik\\Propel\\Behavior\\ExtraProperties\\" : "src"
