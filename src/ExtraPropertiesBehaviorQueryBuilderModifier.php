@@ -51,7 +51,7 @@ class ExtraPropertiesBehaviorQueryBuilderModifier
     protected function getPropertyTableName()
     {
         $propertyTable = $this->behavior->getPropertyTable();
-        $propertyARClassname = $this->builder->getNewStubObjectBuilder($propertyTable)->getClassname();
+        $propertyARClassname = $this->builder->getNewStubObjectBuilder($propertyTable)->getUnprefixedClassName();
         return $propertyARClassname;
     }
 
